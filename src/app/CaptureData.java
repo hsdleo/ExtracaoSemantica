@@ -60,7 +60,7 @@ public class CaptureData {
 	private static int index_atual = 0;
 	public TransparentFrame windowRefence;
 	private static String ocr = "";
-	private static String pathFile = "C:\\semantica\\";
+	private static String pathFile = "C:\\semantica\\teste2\\Frames\\";
 	// private static String pathFile = "";
 	private static String nameFile = "saida.png";
 	private static List<String> lista_leitura = new ArrayList<>();
@@ -74,11 +74,15 @@ public class CaptureData {
 			System.out.println("Entrei no take");
 
 			// getting width and height of image
-			for (int index = 1; index <= 21; index++) {
+			for (int index = 11001; index <= 12105; index++) {
 				index_atual = index;
 				// "%08d%n"
+				String indice;
+				if(index <10000)
+					indice = String.format("%04d", index);
+				else
+					indice = String.format("%05d", index);
 				System.out.println(index);
-				String indice = String.format("%04d", index);
 				String caminho = pathFile + "frames_" + indice + ".png";
 				//String caminho = pathFile + "extra.png";
 				crop(caminho);
@@ -145,18 +149,13 @@ public class CaptureData {
 				} catch (Exception e) {
 				}
 				//Mat image = Imgcodecs.imread(pathFile + nameFile,Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE);
-				 Mat image = Imgcodecs.imread(pathFile + nameFile);
-
-				//Imgproc.cvtColor(image, image, Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE);
-				Imgproc.blur(image, image, new Size(3, 3));
-				//Imgproc.threshold(image, image, 25, 255, Imgproc.THRESH_BINARY);
-				//Imgproc.threshold(image, image, 30, 255, Imgproc.THRESH_BINARY);
+				 
 				//int a = ProcessOCR();
 				
 				//image = doCanny(image);
 
 				//Imgcodecs.imwrite(pathFile +nameFile, image);
-				Mat gray = new Mat();
+				//Mat gray = new Mat();
 				//Imgproc.cvtColor(image, gray, Imgproc.COLOR_RGBA2GRAY);
 				//Imgproc.Canny(gray, gray, 50, 200);
 				//Imgproc.threshold(gray, gray, 0, 255, Imgproc.THRESH_BINARY);
@@ -171,12 +170,20 @@ public class CaptureData {
 				for (int contourIdx = 0; contourIdx < contours.size(); contourIdx++) {
 				    Imgproc.drawContours(gray, contours, contourIdx, new Scalar(255, 255, 255),1);
 				}
-				*/
-
-				//Imgcodecs.imwrite(pathFile +nameFile, gray);
-				Imgcodecs.imwrite(pathFile +nameFile, image);
+				*/				
+				
+				//Imgproc.blur(image, image, new Size(3, 3));
+				//Imgcodecs.imwrite(pathFile +nameFile, image);
 
 				//Imgcodecs.imwrite(pathFile +"saida2.png", image);
+				
+				Mat image = Imgcodecs.imread(pathFile + nameFile);
+				//Imgproc.cvtColor(image, image, Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE);
+				//Imgproc.blur(image, image, new Size(3, 3));
+				Imgproc.threshold(image, image, 60, 255, Imgproc.THRESH_BINARY);
+				Imgcodecs.imwrite(pathFile +nameFile, image);
+
+				//Imgproc.threshold(image, image, 30, 255, Imgproc.THRESH_BINARY);
 				int aa = ProcessOCR();
 
 				
@@ -271,7 +278,7 @@ public class CaptureData {
 			}
 			// SALVAR NO TXT
 
-			File saida_texto = new File("C:\\semantica\\final.txt");
+			File saida_texto = new File("C:\\semantica\\teste2\\Frames\\final.txt");
 			//File saida_pixel = new File("C:\\semantica\\pixel.txt");
 
 			try {
@@ -280,14 +287,19 @@ public class CaptureData {
 				//saida_pixel.delete();
 				//saida_pixel.createNewFile();
 
-				BufferedWriter out = Files.newBufferedWriter(Paths.get("C:\\semantica\\final.txt"),
+				BufferedWriter out = Files.newBufferedWriter(Paths.get("C:\\semantica\\teste2\\Frames\\final.txt"),
 						StandardCharsets.UTF_8, StandardOpenOption.APPEND);
 				//BufferedWriter out2 = Files.newBufferedWriter(Paths.get("C:\\semantica\\pixel.txt"),
 						//StandardCharsets.UTF_8, StandardOpenOption.APPEND);
 				System.out.println("Tamanho = " + lista_leitura.size());
 				int i = 0;
 				for (String ocr_ : lista_leitura) {
-					String indice = String.format("%04d", lista_index.get(i));
+					String indice;
+					if(i<10000)
+						indice = String.format("%04d", lista_index.get(i));
+					else
+						indice = String.format("%045", lista_index.get(i));
+
 					String escrever = ocr_ + ";frames_" + indice + ".png";
 					i++;
 					out.append(escrever);
@@ -328,9 +340,9 @@ public class CaptureData {
 							lista_leitura.add("");
 						else
 							lista_leitura.add(ocr);
-						 System.out.println("Consegui");
+						 //System.out.println("Consegui");
 					} catch (TesseractException e) {
-						 System.out.println("Não cosnegui 1");
+						 System.out.println("TesseractException");
 
 						lista_leitura.add("");
 						lista_index.add(index_atual);
@@ -338,9 +350,9 @@ public class CaptureData {
 						e.printStackTrace();
 					}
 				}
-			}, 1500, TimeUnit.MILLISECONDS);
+			}, 500, TimeUnit.MILLISECONDS);
 		} catch (TimeoutException e) {
-		  System.out.println("Nao deu2");
+		  //System.out.println("Nao deu2");
 		} 
 
 		return 1;
@@ -537,23 +549,32 @@ public class CaptureData {
 	}
 
 	private void crop(String caminho) {
-		//wallmart
+		/*wallmart1
 		int x = 95;
 		int y = 35;
 		int w = 525;
 		int h = 85;
+		*/
+		/*wallmart2
+		int x = 40;
+		int y = 75;
+		int w = 300;
+		int h = 32;
+		*/
 		
-		/*
-		int x = 20;
-		int y = 160;
-		int w = 590;
-		int h = 60;*/
+		//Preço wallmart
+		int x = 170;
+		int y = 145;
+		int w = 130;
+		int h = 40;
+		
+		
 		try {
 			BufferedImage image = ImageIO.read(new File(caminho));
 			//System.out.println(image.getWidth() + "," + image.getHeight());
 
 			AffineTransform at = new AffineTransform();
-			at.rotate(0, image.getWidth() / 2, image.getHeight() / 2);
+			at.rotate(-0.01, image.getWidth() / 2, image.getHeight() / 2);
 			AffineTransformOp op = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
 			 image = op.filter(image, null);
 			
